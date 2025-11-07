@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useWalletAddress } from '~/hooks/useWalletAddress';
 import { WalletInput } from './wallet/WalletInput';
 import { UserProfile } from './wallet/UserProfile';
@@ -14,12 +14,23 @@ export default function WalletInspector() {
   const { user, address: authAddress, loading: authLoading, error: authError } = useWalletAddress();
   const [selectedAddress, setSelectedAddress] = useState<string>('');
   const [activeTab, setActiveTab] = useState<'overview' | 'transactions' | 'tokens' | 'activity' | 'counterparties'>('overview');
+  const [safeAreaInsets, setSafeAreaInsets] = useState<{ top: number; bottom: number; left: number; right: number } | null>(null);
 
   // Use selected address or fall back to authenticated address
   const currentAddress = selectedAddress || authAddress;
 
   // Handle safe area insets for mobile
-  const safeAreaInsets = sdk.context?.client?.safeAreaInsets;
+  useEffect(() => {
+    async function getSafeAreaInsets() {
+      try {
+        const context = await sdk.context;
+        setSafeAreaInsets(context.client?.safeAreaInsets || null);
+      } catch (error) {
+        console.error('Error getting safe area insets:', error);
+      }
+    }
+    getSafeAreaInsets();
+  }, []);
 
   return (
     <div

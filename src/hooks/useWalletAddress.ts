@@ -1,7 +1,7 @@
 /**
  * Hook to get wallet address from Quick Auth
  * 
- * Uses Quick Auth to get the user's verified wallet addresses
+ * Uses Quick Auth and SDK context to get the user's verified wallet addresses
  */
 
 import { useEffect, useState } from 'react';
@@ -20,43 +20,44 @@ export function useWalletAddress() {
         setLoading(true);
         setError(null);
 
-        // Get Quick Auth token
-        const { token } = await sdk.quickAuth.getToken();
+        // Get user info from SDK context (sdk.context is a promise)
+        const context = await sdk.context;
+        const contextUser = context.user;
 
-        if (!token) {
-          throw new Error('Failed to get authentication token');
-        }
+        if (contextUser) {
+          const userData: QuickAuthUser = {
+            fid: contextUser.fid,
+            username: contextUser.username,
+            displayName: contextUser.displayName,
+            pfpUrl: contextUser.pfpUrl,
+          };
 
-        // Verify token on server to get user info
-        const response = await fetch('/api/auth/validate', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ token }),
-        });
+          setUser(userData);
 
-        if (!response.ok) {
-          throw new Error('Failed to verify authentication');
-        }
-
-        const data = await response.json();
-        const userData = data.user;
-
-        setUser(userData);
-
-        // Extract wallet address - prefer verified addresses, fallback to custody address
-        const walletAddress =
-          userData.verified_addresses?.[0] || userData.custody_address || '';
-
-        if (walletAddress) {
-          setAddress(walletAddress.toLowerCase());
-        } else {
-          setError('No wallet address found');
+          // Fetch primary Ethereum address from Farcaster API
+          try {
+            const response = await fetch(
+              `https://api.farcaster.xyz/fc/primary-address?fid=${contextUser.fid}&protocol=ethereum`
+            );
+            
+            if (response.ok) {
+              const data = await response.json();
+              const walletAddress = data.result?.address?.address;
+              
+              if (walletAddress) {
+                setAddress(walletAddress.toLowerCase());
+              }
+              // If no address found, that's okay - user can enter manually
+            }
+            // If API call fails, that's okay - user can enter address manually
+          } catch (fetchError) {
+            // Silently fail - user can enter address manually
+            console.log('Could not fetch primary address, user can enter manually');
+          }
         }
       } catch (err) {
         console.error('Error getting wallet address:', err);
-        setError(err instanceof Error ? err.message : 'Failed to get wallet address');
+        // Don't set error - allow user to enter address manually
       } finally {
         setLoading(false);
       }

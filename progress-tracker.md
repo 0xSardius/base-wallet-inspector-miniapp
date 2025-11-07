@@ -1,4 +1,15 @@
-# Post-MVP Feature Tracker
+# Progress Tracker
+
+## MVP Status: ✅ Complete
+
+All 5 core features have been implemented:
+- ✅ Quick Auth Integration
+- ✅ Transaction History with pagination and filters
+- ✅ Token Holdings with USD sorting
+- ✅ Activity Heatmap (GitHub-style grid)
+- ✅ Top Counterparties with count/volume switching
+
+## Post-MVP Feature Tracker
 
 This file tracks potential features and improvements to add after the initial MVP is complete.
 

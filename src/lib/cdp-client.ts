@@ -78,12 +78,12 @@ export async function executeCDPQuery(
  * Get CDP configuration from environment variables
  */
 export function getCDPConfig(): CDPConfig {
-  const apiKeyName = process.env.CDP_API_KEY_NAME;
-  const privateKey = process.env.CDP_API_KEY_PRIVATE_KEY;
+  const apiKeyName = process.env.NEXT_PUBLIC_CDP_CLIENT_API;
+  const privateKey = process.env.CDP_API_SECRET;
 
   if (!apiKeyName || !privateKey) {
     throw new Error(
-      'CDP API credentials not configured. Please set CDP_API_KEY_NAME and CDP_API_KEY_PRIVATE_KEY environment variables.'
+      'CDP API credentials not configured. Please set NEXT_PUBLIC_CDP_CLIENT_API and CDP_API_SECRET environment variables.'
     );
   }
 
