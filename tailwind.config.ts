@@ -22,14 +22,18 @@ export default {
   theme: {
   	extend: {
   		colors: {
-  			// Main theme color - change this to update the entire app's color scheme
-  			primary: "#8b5cf6", // Main brand color
-  			"primary-light": "#a78bfa", // For hover states
-  			"primary-dark": "#7c3aed", // For active states
+  			// Neobrutalism theme - black and neon green
+  			primary: "#00FF00", // Neon green
+  			"primary-light": "#33FF33", // Lighter neon green
+  			"primary-dark": "#00CC00", // Darker neon green
   			
   			// Secondary colors for backgrounds and text
-  			secondary: "#f8fafc", // Light backgrounds
-  			"secondary-dark": "#334155", // Dark backgrounds
+  			secondary: "#ffffff", // White backgrounds
+  			"secondary-dark": "#000000", // Black backgrounds
+  			
+  			// Neobrutalism specific colors
+  			neon: "#00FF00",
+  			"neon-dark": "#00CC00",
   			
   			// Legacy CSS variables for backward compatibility
   			background: 'var(--background)',

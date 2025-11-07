@@ -1,35 +1,32 @@
 'use client';
 
-import dynamic from 'next/dynamic';
-import { MiniAppProvider } from '@neynar/react';
-import { SafeFarcasterSolanaProvider } from '~/components/providers/SafeFarcasterSolanaProvider';
-import { ANALYTICS_ENABLED, RETURN_URL } from '~/lib/constants';
+import { useEffect } from 'react';
+import { sdk } from '@farcaster/miniapp-sdk';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
-const WagmiProvider = dynamic(
-  () => import('~/components/providers/WagmiProvider'),
-  {
-    ssr: false,
-  }
-);
+// Create a client for React Query
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 30000, // 30 seconds
+      refetchOnWindowFocus: false,
+    },
+  },
+});
 
 export function Providers({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const solanaEndpoint =
-    process.env.SOLANA_RPC_ENDPOINT || 'https://solana-rpc.publicnode.com';
+  useEffect(() => {
+    // Signal that miniapp is ready when providers mount
+    sdk.actions.ready().catch(console.error);
+  }, []);
+
   return (
-    <WagmiProvider>
-      <MiniAppProvider
-        analyticsEnabled={ANALYTICS_ENABLED}
-        backButtonEnabled={true}
-        returnUrl={RETURN_URL}
-      >
-        <SafeFarcasterSolanaProvider endpoint={solanaEndpoint}>
-          {children}
-        </SafeFarcasterSolanaProvider>
-      </MiniAppProvider>
-    </WagmiProvider>
+    <QueryClientProvider client={queryClient}>
+      {children}
+    </QueryClientProvider>
   );
 }
