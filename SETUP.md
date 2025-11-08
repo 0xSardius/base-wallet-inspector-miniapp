@@ -45,10 +45,17 @@ If authentication fails, you may need to adjust the JWT generation in `src/lib/c
 
 ## Testing
 
-1. Open the app in a Farcaster client (Warpcast, etc.)
-2. The app will auto-authenticate using Quick Auth
-3. Your wallet address will be automatically loaded
-4. You can also manually enter any Base wallet address to explore
+**Important**: You must test via ngrok tunnel in Farcaster. The SDK requires a Farcaster client context and HTTPS.
+
+1. **Start dev server**: `npm run dev`
+2. **Start ngrok** (in new terminal): `ngrok http 3000`
+3. **Whitelist tunnel**: Open the ngrok HTTPS URL in your browser first
+4. **Test in Farcaster**: Use the [Preview Tool](https://farcaster.xyz/~/developers/mini-apps/preview) with your ngrok URL
+5. The app will auto-authenticate using Quick Auth
+6. Your wallet address will be automatically loaded
+7. You can also manually enter any Base wallet address to explore
+
+See [TESTING.md](./TESTING.md) for detailed testing instructions.
 
 ## Features
 
